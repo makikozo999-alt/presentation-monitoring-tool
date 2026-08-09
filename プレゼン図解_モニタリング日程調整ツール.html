@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>モニタリング日程調整ツール｜4分プレゼン図解</title>
+  <style>
+    :root {
+      --ink: #1a2b3c;
+      --muted: #4a5d70;
+      --line: #d5dde6;
+      --panel: #ffffff;
+      --bg: #eef3f8;
+      --accent: #2f6fed;
+      --soft: #e8f0fe;
+      --warn: #b45309;
+      --ok: #0f766e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: #0f1720;
+      color: var(--ink);
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+    }
+
+    .stage {
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      margin: 0 auto;
+      background: var(--bg);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 2.2% 2.4% 1.8%;
+      gap: 1.4%;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2%;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.8%;
+    }
+
+    .eyebrow {
+      font-size: clamp(10px, 1.1vw, 14px);
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35em;
+    }
+
+    h1 {
+      font-size: clamp(18px, 2.2vw, 30px);
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .tag {
+      flex-shrink: 0;
+      background: var(--soft);
+      color: var(--accent);
+      border: 1px solid #bfd2fb;
+      border-radius: 999px;
+      padding: 0.45em 0.9em;
+      font-size: clamp(10px, 1.05vw, 13px);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 22% 1fr 22%;
+      gap: 1.6%;
+      min-height: 0;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5%;
+      min-height: 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8% 9%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.55em;
+    }
+
+    .card h2 {
+      font-size: clamp(12px, 1.25vw, 16px);
+      color: var(--accent);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+
+    .card h2::before {
+      content: "";
+      width: 0.35em;
+      height: 0.35em;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .card p, .card li {
+      font-size: clamp(11px, 1.15vw, 15px);
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45em;
+    }
+
+    .card li::before {
+      content: "・";
+      color: var(--muted);
+      margin-right: 0.1em;
+    }
+
+    .quote {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .center {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.4% 1.6% 1.2%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 1%;
+      min-height: 0;
+    }
+
+    .center-label {
+      text-align: center;
+      font-size: clamp(11px, 1.15vw, 14px);
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .center-label strong {
+      color: var(--accent);
+    }
+
+    .figure-wrap {
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f7fafc;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #e5edf5;
+    }
+
+    .figure-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    footer {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.6%;
+    }
+
+    .footer-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.1% 1.6%;
+      display: flex;
+      align-items: center;
+      gap: 1.2%;
+    }
+
+    .footer-card .label {
+      flex-shrink: 0;
+      font-size: clamp(11px, 1.15vw, 14px);
+      font-weight: 800;
+      color: #fff;
+      background: var(--ok);
+      border-radius: 8px;
+      padding: 0.45em 0.75em;
+    }
+
+    .footer-card.ask .label {
+      background: var(--accent);
+    }
+
+    .footer-card p {
+      font-size: clamp(11px, 1.2vw, 15px);
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    @media (max-aspect-ratio: 4/3) {
+      .main { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+      .col { flex-direction: row; }
+      .card { padding: 3% 3.5%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <header>
+      <div>
+        <p class="eyebrow">相談支援｜構想の共有（完成報告ではない）</p>
+        <h1>繰り返し作業を減らし、支援の時間を取り戻す<br />モニタリング日程調整ツールを、これから作りたい</h1>
+      </div>
+      <div class="tag">毎月の訪問調整 約30件</div>
+    </header>
+
+    <div class="main">
+      <div class="col">
+        <section class="card">
+          <h2>いまの困りごと</h2>
+          <ul>
+            <li>モニタリングは支給開始日から<strong>3ヶ月ごと</strong></li>
+            <li>Excelで該当月に丸を入れ、ずれたら<strong>手で付け直し</strong></li>
+            <li>いちばん重いのは、<strong>1年分を手で入れる</strong>作業</li>
+          </ul>
+          <p class="quote">「めんどくさいな。ずれたらどうしよう。」</p>
+        </section>
+        <section class="card">
+          <h2>本当はしたいこと</h2>
+          <p>訪問先の<strong>エリアが近い人</strong>で日程を組みたい。</p>
+          <p>でも確認しながら組むのは難しく、実際はエリアがバラバラでも日程優先で決めている。</p>
+        </section>
+      </div>
+
+      <section class="center">
+        <p class="center-label">作りたいものの全体像　｜　<strong>該当月の自動判定 × 実施管理 × AIルート提案</strong></p>
+        <div class="figure-wrap">
+          <img
+            src="monitoring-schedule-ai-tool-concept.png"
+            alt="モニタリング日程調整ツールのコンセプト図。Excelライクな管理表から今月の対象者を出し、AIが地図・訪問順番・カレンダー案を提案する流れ"
+          />
+        </div>
+      </section>
+
+      <div class="col">
+        <section class="card">
+          <h2>作りたい核</h2>
+          <ul>
+            <li>支給開始日を起点に、<strong>該当月を自動で出す</strong></li>
+            <li>できなかった月は<strong>1ヶ月ずらす</strong></li>
+            <li><strong>実施したかどうか</strong>も分かるようにする</li>
+          </ul>
+        </section>
+        <section class="card">
+          <h2>AIに任せたいこと</h2>
+          <p>該当月の方の居住エリアを整理して、スケジュール調整の<strong>順番リストを一括で作る</strong>。</p>
+          <p>「該当月を出す → エリアで並べる」の一手間を減らしたい。</p>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-card">
+        <span class="label">どうなる</span>
+        <p>年度始めの手入力や「今月対象だっけ？」の迷いが減る。その分の時間を、登録者の方への直接支援に回せる。</p>
+      </div>
+      <div class="footer-card ask">
+        <span class="label">お願い</span>
+        <p>「そこはこう作った方がいい」「この作り方が近い」など、作るときのアドバイスをください。</p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
