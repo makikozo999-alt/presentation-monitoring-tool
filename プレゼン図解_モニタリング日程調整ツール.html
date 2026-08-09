@@ -1,294 +1,440 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>モニタリング日程調整ツール｜4分プレゼン図解</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta property="og:title" content="モニタリング日程調整ツール — これから作りたい構想">
+  <meta property="og:description" content="相談支援の繰り返し作業を減らし、支援の時間を取り戻すツールの構想を図解します。">
+  <meta property="og:type" content="article">
+  <title>モニタリング日程調整ツール — これから作りたい構想</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFFFFF'/><rect x='8' y='8' width='84' height='84' rx='14' fill='none' stroke='%233B82F6' stroke-width='4'/><circle cx='32' cy='40' r='10' fill='%233B82F6' opacity='0.8'/><circle cx='68' cy='40' r='10' fill='%2360A5FA' opacity='0.8'/><rect x='25' y='62' width='50' height='6' rx='3' fill='%2394A3B8' opacity='0.6'/><rect x='30' y='74' width='40' height='6' rx='3' fill='%2394A3B8' opacity='0.3'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ads: {
+              bg: '#FFFFFF',
+              surface: '#F8FAFC',
+              hover: '#F1F5F9',
+              border: '#E2E8F0',
+              accent: '#3B82F6',
+              'accent-light': '#2563EB',
+              text: '#1E293B',
+              muted: '#64748B',
+              dim: '#94A3B8',
+              positive: '#10B981',
+              negative: '#EF4444',
+              warning: '#F59E0B',
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans JP"', '"Hiragino Sans"', '"Hiragino Kaku Gothic ProN"', '"Yu Gothic UI"', '"Meiryo"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    :root {
-      --ink: #1a2b3c;
-      --muted: #4a5d70;
-      --line: #d5dde6;
-      --panel: #ffffff;
-      --bg: #eef3f8;
-      --accent: #2f6fed;
-      --soft: #e8f0fe;
-      --warn: #b45309;
-      --ok: #0f766e;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      height: 100%;
-      background: #0f1720;
-      color: var(--ink);
-      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", sans-serif;
-    }
-
-    .stage {
-      width: min(100vw, calc(100vh * 16 / 9));
-      height: min(100vh, calc(100vw * 9 / 16));
-      margin: 0 auto;
-      background: var(--bg);
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: 2.2% 2.4% 1.8%;
-      gap: 1.4%;
-    }
-
-    header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 2%;
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 0.8%;
-    }
-
-    .eyebrow {
-      font-size: clamp(10px, 1.1vw, 14px);
-      color: var(--accent);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.35em;
-    }
-
-    h1 {
-      font-size: clamp(18px, 2.2vw, 30px);
-      line-height: 1.25;
-      font-weight: 800;
-    }
-
-    .tag {
-      flex-shrink: 0;
-      background: var(--soft);
-      color: var(--accent);
-      border: 1px solid #bfd2fb;
-      border-radius: 999px;
-      padding: 0.45em 0.9em;
-      font-size: clamp(10px, 1.05vw, 13px);
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .main {
-      display: grid;
-      grid-template-columns: 22% 1fr 22%;
-      gap: 1.6%;
-      min-height: 0;
-    }
-
-    .col {
-      display: flex;
-      flex-direction: column;
-      gap: 2.5%;
-      min-height: 0;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 8% 9%;
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 0.55em;
-    }
-
-    .card h2 {
-      font-size: clamp(12px, 1.25vw, 16px);
-      color: var(--accent);
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 0.4em;
-    }
-
-    .card h2::before {
-      content: "";
-      width: 0.35em;
-      height: 0.35em;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .card p, .card li {
-      font-size: clamp(11px, 1.15vw, 15px);
-      line-height: 1.45;
-      color: var(--ink);
-    }
-
-    .card ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45em;
-    }
-
-    .card li::before {
-      content: "・";
-      color: var(--muted);
-      margin-right: 0.1em;
-    }
-
-    .quote {
-      color: var(--warn);
-      font-weight: 700;
-    }
-
-    .center {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 1.4% 1.6% 1.2%;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 1%;
-      min-height: 0;
-    }
-
-    .center-label {
-      text-align: center;
-      font-size: clamp(11px, 1.15vw, 14px);
-      font-weight: 800;
-      color: var(--muted);
-    }
-
-    .center-label strong {
-      color: var(--accent);
-    }
-
-    .figure-wrap {
-      min-height: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f7fafc;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid #e5edf5;
-    }
-
-    .figure-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    footer {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 1.6%;
-    }
-
-    .footer-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 1.1% 1.6%;
-      display: flex;
-      align-items: center;
-      gap: 1.2%;
-    }
-
-    .footer-card .label {
-      flex-shrink: 0;
-      font-size: clamp(11px, 1.15vw, 14px);
-      font-weight: 800;
-      color: #fff;
-      background: var(--ok);
-      border-radius: 8px;
-      padding: 0.45em 0.75em;
-    }
-
-    .footer-card.ask .label {
-      background: var(--accent);
-    }
-
-    .footer-card p {
-      font-size: clamp(11px, 1.2vw, 15px);
-      line-height: 1.4;
-      font-weight: 600;
-    }
-
-    @media (max-aspect-ratio: 4/3) {
-      .main { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
-      .col { flex-direction: row; }
-      .card { padding: 3% 3.5%; }
+    @media print {
+      .no-print { display: none !important; }
+      body { border-top: none !important; }
+      .rounded-xl { break-inside: avoid; }
+      .md\:flex-row { flex-direction: row !important; }
+      .md\:hidden { display: none !important; }
+      .hidden.md\:block { display: block !important; }
+      .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      .md\:mb-20 { margin-bottom: 5rem !important; }
+      .md\:py-16 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+      .bg-clip-text.text-transparent {
+        -webkit-background-clip: initial !important;
+        background-clip: initial !important;
+        color: #2563EB !important;
+        -webkit-text-fill-color: #2563EB !important;
+      }
     }
   </style>
 </head>
-<body>
-  <div class="stage">
-    <header>
-      <div>
-        <p class="eyebrow">相談支援｜構想の共有（完成報告ではない）</p>
-        <h1>繰り返し作業を減らし、支援の時間を取り戻す<br />モニタリング日程調整ツールを、これから作りたい</h1>
+<body class="bg-ads-bg text-slate-600 antialiased leading-relaxed border-t-4 border-ads-accent">
+  <div class="no-print max-w-3xl mx-auto px-5 pt-2 flex justify-end">
+    <button onclick="window.print()" class="flex items-center gap-1.5 text-xs text-ads-dim hover:text-ads-accent transition-colors cursor-pointer">
+      <i data-lucide="download" class="w-3.5 h-3.5"></i>
+      PDF
+    </button>
+  </div>
+  <main class="max-w-3xl mx-auto px-5 py-10 md:py-16">
+
+<!-- HERO -->
+<div class="text-center mb-8 md:mb-10">
+  <div class="inline-flex items-center gap-2 bg-ads-accent/10 text-ads-accent-light px-4 py-1.5 rounded-full text-sm font-medium mb-6">
+    <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+    相談支援・業務改善
+  </div>
+  <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-6">
+    モニタリング日程調整ツール
+  </h1>
+  <p class="text-lg text-ads-muted max-w-xl mx-auto leading-relaxed">
+    繰り返し作業を減らして、<br class="hidden md:inline">
+    本来やりたい支援の時間を取り戻すツールを、これから作りたい。
+  </p>
+</div>
+
+<!-- ONE-PAGE SUMMARY -->
+<div class="bg-ads-surface border border-ads-border rounded-2xl p-6 md:p-8 mb-6">
+  <div class="text-center mb-6 md:mb-8">
+    <p class="text-xl md:text-2xl font-black text-slate-900 mb-2">
+      ひとことで言うと ── <span class="text-ads-accent-light">該当月を自動で出し、AIで訪問順を組む</span>
+    </p>
+    <p class="text-sm text-ads-muted">
+      支給開始日を起点に該当月を判定し、実施・ずらし管理までつなげる
+    </p>
+  </div>
+
+  <div class="flex flex-col md:flex-row items-stretch justify-center gap-3 md:gap-2 mb-6">
+    <div class="flex-1 bg-white border border-ads-border rounded-xl p-4 text-center">
+      <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="calendar-range" class="w-6 h-6 text-blue-600"></i>
       </div>
-      <div class="tag">毎月の訪問調整 約30件</div>
-    </header>
-
-    <div class="main">
-      <div class="col">
-        <section class="card">
-          <h2>いまの困りごと</h2>
-          <ul>
-            <li>モニタリングは支給開始日から<strong>3ヶ月ごと</strong></li>
-            <li>Excelで該当月に丸を入れ、ずれたら<strong>手で付け直し</strong></li>
-            <li>いちばん重いのは、<strong>1年分を手で入れる</strong>作業</li>
-          </ul>
-          <p class="quote">「めんどくさいな。ずれたらどうしよう。」</p>
-        </section>
-        <section class="card">
-          <h2>本当はしたいこと</h2>
-          <p>訪問先の<strong>エリアが近い人</strong>で日程を組みたい。</p>
-          <p>でも確認しながら組むのは難しく、実際はエリアがバラバラでも日程優先で決めている。</p>
-        </section>
+      <div class="font-bold text-slate-900 text-sm mb-1">該当月の自動判定</div>
+      <div class="text-xs text-ads-muted">支給開始日から3ヶ月ごと</div>
+    </div>
+    <div class="flex items-center justify-center md:px-1">
+      <i data-lucide="arrow-right" class="w-5 h-5 text-ads-accent hidden md:block"></i>
+      <i data-lucide="arrow-down" class="w-5 h-5 text-ads-accent md:hidden"></i>
+    </div>
+    <div class="flex-1 bg-white border border-ads-border rounded-xl p-4 text-center">
+      <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="clipboard-check" class="w-6 h-6 text-amber-600"></i>
       </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">実施・ずらし管理</div>
+      <div class="text-xs text-ads-muted">できなければ1ヶ月ずらす</div>
+    </div>
+    <div class="flex items-center justify-center md:px-1">
+      <i data-lucide="arrow-right" class="w-5 h-5 text-ads-accent hidden md:block"></i>
+      <i data-lucide="arrow-down" class="w-5 h-5 text-ads-accent md:hidden"></i>
+    </div>
+    <div class="flex-1 bg-ads-accent/5 border-2 border-ads-accent/20 rounded-xl p-4 text-center">
+      <div class="w-12 h-12 rounded-xl bg-ads-accent/15 border-2 border-ads-accent/30 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="route" class="w-6 h-6 text-ads-accent-light"></i>
+      </div>
+      <div class="font-bold text-ads-accent-light text-sm mb-1">AI訪問プラン</div>
+      <div class="text-xs text-ads-muted">地図・順番・カレンダー案</div>
+    </div>
+  </div>
 
-      <section class="center">
-        <p class="center-label">作りたいものの全体像　｜　<strong>該当月の自動判定 × 実施管理 × AIルート提案</strong></p>
-        <div class="figure-wrap">
-          <img
-            src="monitoring-schedule-ai-tool-concept.png"
-            alt="モニタリング日程調整ツールのコンセプト図。Excelライクな管理表から今月の対象者を出し、AIが地図・訪問順番・カレンダー案を提案する流れ"
-          />
-        </div>
-      </section>
+  <div class="bg-white border border-ads-border rounded-xl overflow-hidden">
+    <img
+      src="monitoring-schedule-ai-tool-concept.png"
+      alt="モニタリング日程調整ツールの全体像。Excelライクな管理表から今月の対象者を出し、AIが地図・訪問順番・カレンダー案を提案する"
+      class="w-full h-auto block"
+    >
+  </div>
+</div>
 
-      <div class="col">
-        <section class="card">
-          <h2>作りたい核</h2>
-          <ul>
-            <li>支給開始日を起点に、<strong>該当月を自動で出す</strong></li>
-            <li>できなかった月は<strong>1ヶ月ずらす</strong></li>
-            <li><strong>実施したかどうか</strong>も分かるようにする</li>
-          </ul>
-        </section>
-        <section class="card">
-          <h2>AIに任せたいこと</h2>
-          <p>該当月の方の居住エリアを整理して、スケジュール調整の<strong>順番リストを一括で作る</strong>。</p>
-          <p>「該当月を出す → エリアで並べる」の一手間を減らしたい。</p>
-        </section>
+<p class="text-sm text-ads-muted text-center mb-12 md:mb-16">ここから、構想を順に見ていきます。</p>
+
+<!-- SECTION 1: 仕事 -->
+<section class="mb-14 md:mb-20">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-9 h-9 rounded-lg bg-ads-accent/10 flex items-center justify-center shrink-0">
+      <span class="text-ads-accent-light font-black text-sm">1</span>
+    </div>
+    <h2 class="text-xl md:text-2xl font-black text-slate-900">私の仕事：相談支援</h2>
+  </div>
+
+  <p class="text-sm text-ads-muted mb-5 leading-relaxed">
+    障がいのある登録者の方が、障害福祉サービスを利用して希望する生活を送れるよう、ご本人や関係者と一緒に計画を作り、定期的に様子を確認し、必要な連絡調整を行う仕事です。一人事業所なので、これから話す作業も、主に私が担っています。
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-3">
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-4 text-center">
+      <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+      </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">計画を作る</div>
+      <div class="text-xs text-ads-muted">本人・関係者と一緒に</div>
+    </div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-4 text-center">
+      <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="home" class="w-5 h-5 text-emerald-600"></i>
+      </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">様子を確認する</div>
+      <div class="text-xs text-ads-muted">定期訪問（モニタリング）</div>
+    </div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-4 text-center">
+      <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="messages-square" class="w-5 h-5 text-violet-600"></i>
+      </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">連絡調整する</div>
+      <div class="text-xs text-ads-muted">必要なつなぎを行う</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: いまの困りごと -->
+<section class="mb-14 md:mb-20">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
+      <span class="text-orange-600 font-black text-sm">2</span>
+    </div>
+    <h2 class="text-xl md:text-2xl font-black text-slate-900">いまの困りごと</h2>
+  </div>
+
+  <p class="text-sm text-ads-muted mb-5 leading-relaxed">
+    毎月、登録者の方の自宅を訪問する日程調整が発生します。件数はだいたい30件前後です。その前に必ず確認しているのが、「この人は今月、対象だっけ？」です。
+  </p>
+
+  <div class="bg-ads-surface border border-ads-border rounded-xl p-5 mb-5">
+    <div class="flex items-center gap-2 mb-3">
+      <i data-lucide="calendar-clock" class="w-5 h-5 text-ads-accent-light"></i>
+      <h3 class="font-bold text-slate-900">モニタリングとは</h3>
+    </div>
+    <p class="text-sm text-ads-muted leading-relaxed">
+      定期確認のことです。支給開始日から<strong class="text-slate-800">3ヶ月ごと</strong>に行います。いまはExcelで、該当月に丸を入れて管理しています。できなかった月は、翌月に丸を付け直す。これも手入力です。
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-5">
+    <div class="bg-white border border-ads-border rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="pencil-line" class="w-5 h-5 text-orange-600"></i>
+        <h3 class="font-bold text-slate-900">いちばん重い作業</h3>
+      </div>
+      <p class="text-sm text-ads-muted leading-relaxed mb-3">
+        年度始めや利用開始のときに、<strong class="text-slate-800">1年分を手で入れる</strong>作業です。
+      </p>
+      <div class="bg-orange-50 border border-orange-100 rounded-lg p-3 text-sm font-bold text-orange-700">
+        「めんどくさいな。ずれたらどうしよう。」
       </div>
     </div>
-
-    <footer>
-      <div class="footer-card">
-        <span class="label">どうなる</span>
-        <p>年度始めの手入力や「今月対象だっけ？」の迷いが減る。その分の時間を、登録者の方への直接支援に回せる。</p>
+    <div class="bg-white border border-ads-border rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="map-pin" class="w-5 h-5 text-ads-negative"></i>
+        <h3 class="font-bold text-slate-900">本当はしたいこと</h3>
       </div>
-      <div class="footer-card ask">
-        <span class="label">お願い</span>
-        <p>「そこはこう作った方がいい」「この作り方が近い」など、作るときのアドバイスをください。</p>
-      </div>
-    </footer>
+      <p class="text-sm text-ads-muted leading-relaxed mb-3">
+        訪問先の<strong class="text-slate-800">エリアが近い人</strong>で日程を組みたい。
+      </p>
+      <p class="text-sm text-ads-muted leading-relaxed">
+        でも確認しながら組むのは難しくて、実際はエリアがバラバラでも、日程優先で決めています。
+      </p>
+    </div>
   </div>
+
+  <div class="bg-red-50 border border-red-100 rounded-xl p-4 flex gap-3">
+    <i data-lucide="alert-triangle" class="w-5 h-5 text-ads-negative shrink-0 mt-0.5"></i>
+    <p class="text-sm text-slate-700 leading-relaxed">
+      このままだと、同じ確認と入力の繰り返しに、<strong>支援の時間が奪われ続けます。</strong>
+    </p>
+  </div>
+</section>
+
+<!-- SECTION 3: 作りたい核 -->
+<section class="mb-14 md:mb-20">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+      <span class="text-emerald-600 font-black text-sm">3</span>
+    </div>
+    <h2 class="text-xl md:text-2xl font-black text-slate-900">作りたいものの核</h2>
+  </div>
+
+  <p class="text-sm text-ads-muted mb-5 leading-relaxed">
+    作りたいものの核は、シンプルです。1年分をまとめて反映すること自体はExcelでもできると思います。ただ、ずらしや実施の管理まで回すのは難しそうだと感じています。入力しやすさや見やすさも、Excelより一歩よくしたいです。
+  </p>
+
+  <div class="space-y-3 mb-6">
+    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
+      <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 font-black text-sm">1</div>
+      <div>
+        <div class="font-bold text-slate-900 text-sm mb-1">該当月を自動で出す</div>
+        <p class="text-sm text-ads-muted">支給開始日を起点に、3ヶ月ごとの該当月を計算する</p>
+      </div>
+    </div>
+    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
+      <div class="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 font-black text-sm">2</div>
+      <div>
+        <div class="font-bold text-slate-900 text-sm mb-1">できなかった月は1ヶ月ずらす</div>
+        <p class="text-sm text-ads-muted">翌月への付け直しを、手作業ではなく仕組みで回す</p>
+      </div>
+    </div>
+    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
+      <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 font-black text-sm">3</div>
+      <div>
+        <div class="font-bold text-slate-900 text-sm mb-1">実施したかどうかも分かるようにする</div>
+        <p class="text-sm text-ads-muted">「今月対象だっけ？」の迷いを減らす</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Excel-like mini mock -->
+  <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-700">
+    <div class="flex items-center gap-2 px-4 py-2.5 bg-slate-800 border-b border-slate-700">
+      <div class="flex gap-1.5">
+        <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+      </div>
+      <div class="text-xs text-slate-300 font-medium">モニタリング管理（イメージ）</div>
+    </div>
+    <div class="p-3 overflow-x-auto">
+      <table class="w-full text-xs text-left">
+        <thead>
+          <tr class="text-slate-400 border-b border-slate-700">
+            <th class="py-2 px-2 font-medium">氏名</th>
+            <th class="py-2 px-2 font-medium">支給開始日</th>
+            <th class="py-2 px-2 font-medium">該当月</th>
+            <th class="py-2 px-2 font-medium">実施</th>
+            <th class="py-2 px-2 font-medium">エリア</th>
+          </tr>
+        </thead>
+        <tbody class="text-slate-200">
+          <tr class="border-b border-slate-800">
+            <td class="py-2 px-2">田中さん</td>
+            <td class="py-2 px-2">2025/04/01</td>
+            <td class="py-2 px-2 text-sky-300">4・7・10・1月</td>
+            <td class="py-2 px-2 text-emerald-400">実施済</td>
+            <td class="py-2 px-2">北区</td>
+          </tr>
+          <tr class="border-b border-slate-800">
+            <td class="py-2 px-2">佐藤さん</td>
+            <td class="py-2 px-2">2025/05/15</td>
+            <td class="py-2 px-2 text-sky-300">5・8・11・2月</td>
+            <td class="py-2 px-2 text-amber-400">翌月へ</td>
+            <td class="py-2 px-2">南区</td>
+          </tr>
+          <tr>
+            <td class="py-2 px-2">鈴木さん</td>
+            <td class="py-2 px-2">2025/06/01</td>
+            <td class="py-2 px-2 text-sky-300">6・9・12・3月</td>
+            <td class="py-2 px-2 text-slate-400">未</td>
+            <td class="py-2 px-2">東区</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: AI -->
+<section class="mb-14 md:mb-20">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
+      <span class="text-violet-600 font-black text-sm">4</span>
+    </div>
+    <h2 class="text-xl md:text-2xl font-black text-slate-900">AIに任せたいこと</h2>
+  </div>
+
+  <p class="text-sm text-ads-muted mb-5 leading-relaxed">
+    AIに任せたいのが訪問ルートの組み方です。該当月の方の居住エリアを整理して、スケジュール調整の順番リストを一括で作る。Excelのソートでも近いことはできます。でも、「該当月を出す → エリアで並べる」を毎回クリックでやっている、その一手間を減らしたいんです。
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-3 mb-5">
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-4">
+      <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-3">
+        <i data-lucide="map" class="w-5 h-5 text-blue-600"></i>
+      </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">ルート地図</div>
+      <p class="text-xs text-ads-muted leading-relaxed">訪問先を地図上でつなぎ、回り方を見える化する</p>
+    </div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-4">
+      <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-3">
+        <i data-lucide="list-ordered" class="w-5 h-5 text-emerald-600"></i>
+      </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">訪問順番</div>
+      <p class="text-xs text-ads-muted leading-relaxed">エリアが近い人から並べた順番リストを一括作成</p>
+    </div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-4">
+      <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center mb-3">
+        <i data-lucide="calendar-days" class="w-5 h-5 text-violet-600"></i>
+      </div>
+      <div class="font-bold text-slate-900 text-sm mb-1">カレンダー案</div>
+      <p class="text-xs text-ads-muted leading-relaxed">訪問日時のたたき台をカレンダーに落とす</p>
+    </div>
+  </div>
+
+  <div class="bg-white border border-ads-border rounded-xl p-5">
+    <div class="text-xs font-bold text-ads-accent tracking-wider mb-3">減らしたい一手間</div>
+    <div class="flex flex-col md:flex-row items-center gap-2 md:gap-3">
+      <div class="bg-ads-surface border border-ads-border rounded-lg px-4 py-2 text-sm font-bold text-slate-800 w-full md:w-auto text-center">該当月を出す</div>
+      <i data-lucide="arrow-right" class="w-4 h-4 text-ads-dim hidden md:block"></i>
+      <i data-lucide="arrow-down" class="w-4 h-4 text-ads-dim md:hidden"></i>
+      <div class="bg-ads-surface border border-ads-border rounded-lg px-4 py-2 text-sm font-bold text-slate-800 w-full md:w-auto text-center">エリアで並べる</div>
+      <i data-lucide="arrow-right" class="w-4 h-4 text-ads-dim hidden md:block"></i>
+      <i data-lucide="arrow-down" class="w-4 h-4 text-ads-dim md:hidden"></i>
+      <div class="bg-ads-accent/10 border border-ads-accent/20 rounded-lg px-4 py-2 text-sm font-bold text-ads-accent-light w-full md:w-auto text-center">毎回クリックしている</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: どうなる -->
+<section class="mb-14 md:mb-20">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-9 h-9 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0">
+      <span class="text-sky-600 font-black text-sm">5</span>
+    </div>
+    <h2 class="text-xl md:text-2xl font-black text-slate-900">これができれば</h2>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-5">
+    <div class="bg-red-50 border border-red-100 rounded-xl p-5">
+      <div class="text-xs font-bold text-ads-negative tracking-wider mb-2">Before</div>
+      <ul class="space-y-2 text-sm text-slate-700">
+        <li class="flex gap-2"><span class="text-ads-negative shrink-0">×</span>年度始めの1年分手入力</li>
+        <li class="flex gap-2"><span class="text-ads-negative shrink-0">×</span>「今月対象だっけ？」の迷い</li>
+        <li class="flex gap-2"><span class="text-ads-negative shrink-0">×</span>エリアバラバラでも日程優先</li>
+      </ul>
+    </div>
+    <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-5">
+      <div class="text-xs font-bold text-ads-positive tracking-wider mb-2">After</div>
+      <ul class="space-y-2 text-sm text-slate-700">
+        <li class="flex gap-2"><span class="text-ads-positive shrink-0">○</span>該当月の自動判定で手入力が減る</li>
+        <li class="flex gap-2"><span class="text-ads-positive shrink-0">○</span>実施・ずらしが一目で分かる</li>
+        <li class="flex gap-2"><span class="text-ads-positive shrink-0">○</span>その分の時間を直接支援に回せる</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bg-ads-surface border border-ads-border rounded-xl p-5">
+    <p class="text-sm text-ads-muted leading-relaxed">
+      仕事はみなさんそれぞれだと思います。でも、「毎年同じ転記をしている」「少しのクリックの積み重ねが重い」という感覚は、どこかで重なるんじゃないかと思っています。
+    </p>
+  </div>
+</section>
+
+<!-- SECTION 6: お願い -->
+<section class="mb-6">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-9 h-9 rounded-lg bg-ads-accent/10 flex items-center justify-center shrink-0">
+      <span class="text-ads-accent-light font-black text-sm">6</span>
+    </div>
+    <h2 class="text-xl md:text-2xl font-black text-slate-900">お願い</h2>
+  </div>
+
+  <div class="bg-ads-accent/5 border-2 border-ads-accent/20 rounded-2xl p-6 md:p-8 text-center">
+    <div class="w-12 h-12 rounded-xl bg-ads-accent/15 flex items-center justify-center mx-auto mb-4">
+      <i data-lucide="message-circle-heart" class="w-6 h-6 text-ads-accent-light"></i>
+    </div>
+    <p class="text-base md:text-lg font-bold text-slate-900 mb-3 leading-relaxed">
+      今日は完成報告ではなく、<br class="hidden md:inline">これから作る構想の共有です。
+    </p>
+    <p class="text-sm text-ads-muted leading-relaxed max-w-md mx-auto">
+      「そこはこう作った方がいい」「この作り方が近い」など、作るときのアドバイスをいただけると嬉しいです。
+    </p>
+  </div>
+</section>
+
+  </main>
+  <footer class="max-w-3xl mx-auto px-5 pb-10 pt-6 border-t border-ads-border/30">
+    <p class="text-xs text-ads-dim text-center">AI-Driven School の図解ツールで作成</p>
+  </footer>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
